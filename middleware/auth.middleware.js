@@ -16,6 +16,7 @@ const extractToken = (req) => {
 
 // Verify JWT and attach the (lean) user to req.user
 exports.protect = asyncHandler(async (req, res, next) => {
+  if (req.method === "OPTIONS") return next();
   const token = extractToken(req);
   if (!token) {
     throw new AppError("Authentication required. Please login.", 401);

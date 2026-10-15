@@ -36,21 +36,52 @@ app.use(requestLogger);
 // ==========================
 app.use(helmet());
 
-const allowedOrigins = config.cors.origins;
+const configuredOrigins = (config.cors.origins || []).map((o) => o.replace(/\/+$/, "").toLowerCase());
+
+const isOriginAllowed = (origin) => {
+  // Mobile apps (Flutter APK/iOS) and server-to-server calls send no Origin header
+  if (!origin) return true;
+
+  const norm = origin.replace(/\/+$/, "").toLowerCase();
+
+  // Wildcard configured in CLIENT_URL
+  if (configuredOrigins.includes("*")) return true;
+
+  // In non-production, if no origins configured, allow all
+  if (!config.isProd && configuredOrigins.length === 0) return true;
+
+  // Exact match with configured origins
+  if (configuredOrigins.includes(norm)) return true;
+
+  // Allow Render hosted domains (*.onrender.com) so Flutter admin panel works seamlessly
+  if (norm.endsWith(".onrender.com")) return true;
+
+  // Wildcard subdomain matching (e.g. *.yourdomain.com)
+  for (const pattern of configuredOrigins) {
+    if (pattern.startsWith("*.")) {
+      const domainSuffix = pattern.slice(2);
+      try {
+        const urlObj = new URL(norm);
+        if (urlObj.hostname.endsWith(domainSuffix)) return true;
+      } catch {}
+    }
+  }
+
+  return false;
+};
+
 app.use(
   cors({
-    // Mobile apps (Flutter) send no Origin header, so they are never blocked by CORS.
-    // Only browsers are restricted: in production they must be listed in CLIENT_URL.
     origin(origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      if (!config.isProd && (allowedOrigins.length === 0 || allowedOrigins.includes("*"))) {
+      if (isOriginAllowed(origin)) {
         return callback(null, true);
       }
       return callback(null, false);
     },
-    credentials: false,
-    maxAge: 600,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
+    maxAge: 86400,
   })
 );
 

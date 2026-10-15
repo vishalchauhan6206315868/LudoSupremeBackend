@@ -28,6 +28,7 @@ const createRateLimiter = ({
 
   const middleware = (req, res, next) => {
     if (!config.rateLimit.enabled) return next();
+    if (req.method === "OPTIONS") return next();
 
     const key = keyGenerator(req);
     const now = Date.now();

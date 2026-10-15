@@ -27,7 +27,7 @@ const toBool = (value, fallback) => {
 const toList = (value) =>
   String(value || "")
     .split(",")
-    .map((s) => s.trim())
+    .map((s) => s.trim().replace(/\/+$/, ""))
     .filter(Boolean);
 
 const parseTrustProxy = (value) => {
