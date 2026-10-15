@@ -1,0 +1,107 @@
+{
+  "info": {
+    "_postman_id": "c1f7a4d5-8e2b-4d7a-8f6a-9f5b2c7d9a10",
+    "name": "LudoSupreme - Rewards API",
+    "description": "Rewards API collection for LudoSupreme Flutter app",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_JWT_TOKEN",
+      "type": "string"
+    },
+    {
+      "key": "rewardId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Get All Rewards",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/rewards",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "rewards"]
+        },
+        "description": "Fetch all active rewards for the logged-in user with isClaimed and canClaim statuses"
+      },
+      "response": []
+    },
+    {
+      "name": "2. Get My Rewards History",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/rewards/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "rewards", "me"]
+        },
+        "description": "Fetch claim history and claimed rewards of the logged-in user"
+      },
+      "response": []
+    },
+    {
+      "name": "3. Get Rewards Summary",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/rewards/summary",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "rewards", "summary"]
+        },
+        "description": "Fetch reward summary metrics: totalRewards, claimedRewards, availableRewards, totalCoinsEarned"
+      },
+      "response": []
+    },
+    {
+      "name": "4. Claim Reward",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/rewards/{{rewardId}}/claim",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "rewards", "{{rewardId}}", "claim"]
+        },
+        "description": "Claim an available reward by its ObjectId"
+      },
+      "response": []
+    }
+  ]
+}

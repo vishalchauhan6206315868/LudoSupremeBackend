@@ -1,0 +1,32 @@
+# Local / small-server setup:  docker compose up -d --build
+# MongoDB runs as a single-node REPLICA SET, because wallet transactions require one.
+services:
+  mongo:
+    image: mongo:7
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: >
+        mongosh --quiet --eval
+        "try { rs.status().ok } catch (e) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo:27017'}]}).ok }"
+      interval: 5s
+      timeout: 10s
+      retries: 20
+
+  api:
+    build: .
+    depends_on:
+      mongo:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      MONGO_URI: mongodb://mongo:27017/ludo_supreme?replicaSet=rs0
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+
+volumes:
+  mongo_data:

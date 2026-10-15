@@ -1,0 +1,9 @@
+﻿node_modules/
+.env
+.env.*
+!.env.example
+dist/
+coverage/
+npm-debug.log*
+
+docs/setup-notes-original.txt
