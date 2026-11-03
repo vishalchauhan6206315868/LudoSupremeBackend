@@ -52,6 +52,8 @@ const walletTransactionSchema = new mongoose.Schema(
           "bonus",
           "admin",
           "refund",
+          "deposit",
+          "withdrawal",
           "other",
         ],
         message: "Invalid transaction source",

@@ -138,6 +138,19 @@ function loadConfig(env = process.env) {
       platformFeePercent: toNumber(env.PLATFORM_FEE_PERCENT, 0),
       roomWaitingTtlMinutes: toInt(env.ROOM_WAITING_TTL_MIN, 30),
     },
+
+    razorpay: {
+      keyId: env.RAZORPAY_KEY_ID || "",
+      keySecret: env.RAZORPAY_KEY_SECRET || "",
+      webhookSecret: env.RAZORPAY_WEBHOOK_SECRET || "",
+    },
+
+    payment: {
+      minDeposit: toInt(env.MIN_DEPOSIT_AMOUNT, 10),
+      maxDeposit: toInt(env.MAX_DEPOSIT_AMOUNT, 50000),
+      minWithdrawal: toInt(env.MIN_WITHDRAWAL_AMOUNT, 50),
+      maxWithdrawal: toInt(env.MAX_WITHDRAWAL_AMOUNT, 25000),
+    },
   };
 
   if (config.economy.platformFeePercent < 0 || config.economy.platformFeePercent > 50) {
@@ -153,6 +166,19 @@ function loadConfig(env = process.env) {
   }
   if (config.game.turnTimeoutSeconds < 5) {
     problems.push("TURN_TIMEOUT_SECONDS must be >= 5");
+  }
+
+  // ---- Payment Gateway (Production Validation) -------------------------
+  if (isProd) {
+    if (!env.RAZORPAY_KEY_ID || !String(env.RAZORPAY_KEY_ID).trim()) {
+      problems.push("RAZORPAY_KEY_ID is required in production");
+    }
+    if (!env.RAZORPAY_KEY_SECRET || !String(env.RAZORPAY_KEY_SECRET).trim()) {
+      problems.push("RAZORPAY_KEY_SECRET is required in production");
+    }
+    if (!env.RAZORPAY_WEBHOOK_SECRET || !String(env.RAZORPAY_WEBHOOK_SECRET).trim()) {
+      problems.push("RAZORPAY_WEBHOOK_SECRET is required in production");
+    }
   }
 
   if (problems.length > 0) {

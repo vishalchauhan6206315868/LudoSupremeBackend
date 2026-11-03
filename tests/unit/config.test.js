@@ -9,6 +9,9 @@ const prodEnv = (overrides = {}) => ({
   NODE_ENV: "production",
   MONGO_URI: "mongodb://localhost:27017/x",
   JWT_SECRET: "k9Jd82hs0QpLx7vZr3WmTn5bYcAe1UgF4oHiKs6D",
+  RAZORPAY_KEY_ID: "rzp_test_dummy_id_12345",
+  RAZORPAY_KEY_SECRET: "test_razorpay_secret_67890",
+  RAZORPAY_WEBHOOK_SECRET: "test_webhook_secret_abcde",
   ...overrides,
 });
 
@@ -33,6 +36,12 @@ test("production: short or guessable JWT_SECRET is rejected", () => {
 
 test("production: MONGO_URI is required", () => {
   assert.throws(() => loadConfig(prodEnv({ MONGO_URI: "" })), /MONGO_URI is required/);
+});
+
+test("production: Razorpay keys are required in production", () => {
+  assert.throws(() => loadConfig(prodEnv({ RAZORPAY_KEY_ID: "" })), /RAZORPAY_KEY_ID is required/);
+  assert.throws(() => loadConfig(prodEnv({ RAZORPAY_KEY_SECRET: "" })), /RAZORPAY_KEY_SECRET is required/);
+  assert.throws(() => loadConfig(prodEnv({ RAZORPAY_WEBHOOK_SECRET: "" })), /RAZORPAY_WEBHOOK_SECRET is required/);
 });
 
 test("economy limits are validated", () => {

@@ -13,6 +13,7 @@ const gamesCtl = require("../controllers/games.controller");
 const economyCtl = require("../controllers/economy.controller");
 const contentCtl = require("../controllers/content.controller");
 const supportCtl = require("../../support/controllers/support.controller");
+const paymentsCtl = require("../controllers/payments.controller");
 
 const router = express.Router();
 const { qs } = require("../../../../utils/adminHelpers");
@@ -47,6 +48,12 @@ router.get("/games/:id", v.idParam, check, gamesCtl.getGame);
 router.get("/transactions", v.listQuery, check, economyCtl.listTransactions);
 router.get("/economy/summary", economyCtl.economySummary);
 router.get("/reports/daily", economyCtl.dailyReport);
+
+// Payments & Withdrawals
+router.get("/deposits", v.listQuery, check, paymentsCtl.listDeposits);
+router.get("/withdrawals", v.listQuery, check, paymentsCtl.listWithdrawals);
+router.patch("/withdrawals/:id/approve", adminWriteLimiter, v.withdrawalApproveValidation, check, paymentsCtl.approveWithdrawal);
+router.patch("/withdrawals/:id/reject", adminWriteLimiter, v.withdrawalRejectValidation, check, paymentsCtl.rejectWithdrawal);
 
 // Banners & events
 router.get("/banners", v.listQuery, check, contentCtl.listBanners);

@@ -7,7 +7,7 @@ const WalletTransaction = require("../../wallet/models/WalletTransaction");
 const { dailySeries, revenueTotals } = require("../services/stats.service");
 
 const DAY = 86_400_000;
-const SOURCES = ["game_reward", "game_entry", "bonus", "admin", "refund", "other"];
+const SOURCES = ["game_reward", "game_entry", "bonus", "admin", "refund", "deposit", "withdrawal", "other"];
 
 // GET /api/admin/transactions?page&limit&type=credit|debit&source&userId&from&to
 exports.listTransactions = asyncHandler(async (req, res) => {

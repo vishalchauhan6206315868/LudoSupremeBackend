@@ -14,6 +14,8 @@ const models = [
   "../src/modules/auth/models/User",
   "../src/modules/wallet/models/Wallet",
   "../src/modules/wallet/models/WalletTransaction",
+  "../src/modules/wallet/models/PaymentOrder",
+  "../src/modules/wallet/models/WithdrawalRequest",
   "../src/modules/rooms/models/GameRoom",
   "../src/modules/games/models/GameSession",
   "../src/modules/leaderboard/models/LeaderboardStats",

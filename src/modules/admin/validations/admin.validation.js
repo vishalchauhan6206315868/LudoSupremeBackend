@@ -90,6 +90,27 @@ const ticketStatusValidation = [
   body().custom((v) => v && (v.status || v.priority)).withMessage("Provide status and/or priority"),
 ];
 
+const withdrawalApproveValidation = [
+  idParam,
+  body("transactionRef")
+    .isString()
+    .withMessage("transactionRef must be a string")
+    .bail()
+    .trim()
+    .notEmpty()
+    .withMessage("Payout transaction reference (UTR) is required")
+    .bail()
+    .isLength({ max: 100 })
+    .withMessage("transactionRef cannot exceed 100 characters"),
+  body("adminNote").optional({ values: "null" }).isString().trim().isLength({ max: 500 }),
+];
+
+const withdrawalRejectValidation = [
+  idParam,
+  body("rejectionReason").optional({ values: "null" }).isString().trim().isLength({ max: 500 }),
+  body("adminNote").optional({ values: "null" }).isString().trim().isLength({ max: 500 }),
+];
+
 module.exports = {
   validateRequest,
   isStrongPassword,
@@ -105,4 +126,6 @@ module.exports = {
   bannerUpdateValidation,
   ticketReplyValidation,
   ticketStatusValidation,
+  withdrawalApproveValidation,
+  withdrawalRejectValidation,
 };
